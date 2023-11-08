@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import './RegisterPage.css';
 
-
 function RegisterPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate(); 
+    const apiUrl = process.env.REACT_APP_API_URL || ''; // Fallback to an empty string if the variable is not set
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +20,7 @@ function RegisterPage() {
         
         // Send the user data to the backend for registration
         try {
-            const response = await fetch("http://localhost:4000/api/register", {
+            const response = await fetch(`${apiUrl}/api/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -40,8 +40,6 @@ function RegisterPage() {
         }
     };
     
-    
-
     return (
         <div className="register-form-container">
             <form onSubmit={handleSubmit}>
@@ -90,14 +88,11 @@ function RegisterPage() {
                     />
                 </div>
                 <button type="submit">Register</button>
-            
-
+            </form>
             <div className="login-link-container">
-            Already have an account? <Link to="/login">Login</Link>
+                Already have an account? <Link to="/login">Login</Link>
+            </div>
         </div>
-        </form>
-    </div>
-    
     );
 }
 
