@@ -6,11 +6,12 @@ import './FavoritesPage.css';
 function FavoritesPage() {
   const [favoritedRecipes, setFavoritedRecipes] = useState([]);
   const loggedInUserId = 27;
+  const apiUrl = process.env.REACT_APP_API_URL || ''; // Fallback to an empty string if the variable is not set
 
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const response = await fetch(`/api/user/${loggedInUserId}/favorites`);
+        const response = await fetch(`${apiUrl}/api/user/${loggedInUserId}/favorites`);
         if (!response.ok) {
           throw new Error('Failed to fetch favorites');
         }
@@ -22,7 +23,7 @@ function FavoritesPage() {
     };
 
     fetchFavorites();
-  }, [loggedInUserId]);
+  }, [loggedInUserId, apiUrl]);
 
   return (
     <div className="favorites-container">
