@@ -1,0 +1,77 @@
+.thumbnail-image {
+  max-width: 75px;  /* or whatever size you prefer */
+  max-height: 75px;
+  display: block;
+  margin: 0 auto;  /* to center the image */
+}
+
+/* Hamburger Menu Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hamburger-menu {
+  cursor: pointer;
+  font-size: 24px;
+  padding: 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px; /* Adjust this value based on the position of your hamburger menu */
+  right: 10px; /* Adjust this value based on the position of your hamburger menu */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure dropdown appears above other content */
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f7f7f7;
+}
+
+.favorites-container {
+  text-align: center;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+  justify-content: center;
+}
+
+.recipe-card {
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  max-width: 200px; 
+  margin: 0 auto; 
+}
+
+.recipe-image {
+  width: 100%;
+  max-height: 200px; 
+}
+
+.recipe-name {
+  margin-top: 10px;
+  font-weight: bold;
+}
