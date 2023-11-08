@@ -1,0 +1,4 @@
+http://localhost:3000/ to see the AppContainer.
+http://localhost:3000/login to see the login page.
+http://localhost:3000/register to see the registration page.
+http://localhost:3000/profile to see the user profile.
