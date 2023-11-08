@@ -31,7 +31,7 @@ function RoutesComponent() {
         </PrivateRoute>
       } />
       <Route path="/favorites" element={<FavoritesPage />} />
-      <Route path="/recipe/:recipeId" element={<RecipeDetailPage />} /> {/* Add the missing closing '>' here */}
+      <Route path="/recipe/:recipeId" element={<RecipeDetailPage />} /> 
     </Routes>
   );
 }
