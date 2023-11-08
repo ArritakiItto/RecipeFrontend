@@ -10,32 +10,33 @@ function ProfilePage() {
     const savedFavorites = localStorage.getItem('favoritedRecipes');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
-  const loggedInUserId = 27; 
-  const currentRecipe = recipes && Array.isArray(recipes) && recipes.length > 0 ? recipes[currentRecipeIndex] : null;
+  const loggedInUserId = 27;
+  const currentRecipe = recipes[currentRecipeIndex];
+
+  const apiUrl = process.env.REACT_APP_API_URL || ''; // Fallback to an empty string if the variable is not set
 
   const saveFavoriteToDatabase = async (recipe) => {
     const payload = {
       userId: loggedInUserId,
-      recipeId: parseInt(recipe.idMeal, 10), 
+      recipeId: parseInt(recipe.idMeal, 10),
       recipeName: recipe.strMeal,
       recipeImage: recipe.strMealThumb,
     };
-  
+
     console.log("Saving to favorites:", payload);
-  
+
     try {
-      const response = await fetch('/api/favorites', {
+      const response = await fetch(`${apiUrl}/api/favorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         const errorBody = await response.json();
         if (response.status === 400 && errorBody.error === "Recipe already favorited") {
-          // Recipe is already favorited
           console.log("Recipe already favorited");
         } else {
           throw new Error(`Failed to save favorite: ${response.status} ${errorBody.error}`);
@@ -48,8 +49,6 @@ function ProfilePage() {
       console.error('Error saving favorite:', error);
     }
   };
-  
-
 
   const handleFavorite = (recipe) => {
     let updatedFavorites;
@@ -63,13 +62,13 @@ function ProfilePage() {
     setFavoritedRecipes(updatedFavorites);
     localStorage.setItem('favoritedRecipes', JSON.stringify(updatedFavorites));
   };
-  
+
   const deleteFavoriteFromDatabase = async (recipeId) => {
     try {
-      const response = await fetch(`/api/favorites/${loggedInUserId}/${recipeId}`, {
+      const response = await fetch(`${apiUrl}/api/favorites/${loggedInUserId}/${recipeId}`, {
         method: 'DELETE',
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.log("Recipe not found in favorites");
@@ -86,9 +85,8 @@ function ProfilePage() {
     }
   };
 
-  useEffect(() => {const apiUrl = process.env.REACT_APP_API_URL || ''; // Fallback to an empty string if the variable is not set
-
-  fetch(`${apiUrl}/api/fetch-data`) 
+  useEffect(() => {
+    fetch(`${apiUrl}/api/fetch-data`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -102,7 +100,7 @@ function ProfilePage() {
       .catch(error => {
         console.error('Error fetching recipes:', error);
       });
-  }, []);
+  }, [apiUrl]);
 
   const showNextRecipe = () => {
     if (currentRecipeIndex < recipes.length - 1) {
@@ -118,11 +116,11 @@ function ProfilePage() {
 
   const handleSearch = () => {
     console.log("Current Search Term:", searchTerm);
-    fetch(`/api/fetch-data?search=${searchTerm}`)
+    fetch(`${apiUrl}/api/fetch-data?search=${searchTerm}`)
       .then(response => response.json())
       .then(data => {
         console.log("Fetched Recipes Data:", data);
-        setRecipes(data.meals || []); 
+        setRecipes(data.meals || []);
       })
       .catch(error => {
         console.error('Error fetching recipes', error);
@@ -134,7 +132,7 @@ function ProfilePage() {
       <ProfileHeader />
       <h2>Recipes</h2>
       <div className="search-bar">
-        <input 
+        <input
           type="text"
           placeholder="Search for a recipe..."
           value={searchTerm}
@@ -148,7 +146,7 @@ function ProfilePage() {
           <div id="recipeContainer">
             {currentRecipe && (
               <div className="recipe">
-                <span 
+                <span
                   className={favoritedRecipes.includes(currentRecipe.idMeal) ? 'heart favorited' : 'heart'}
                   onClick={() => handleFavorite(currentRecipe)}
                 >
