@@ -3,24 +3,25 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import './RegisterPage.css';
 
+
 function RegisterPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate(); 
-    const apiUrl = process.env.REACT_APP_API_URL || ''; // Fallback to an empty string if the variable is not set
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(''); // Reset error message on new submission
         if (password !== confirmPassword) {
-            alert("Passwords do not match!");
+            setErrorMessage("Passwords do not match!");
             return;
         }
         
-        // Send the user data to the backend for registration
         try {
-            const response = await fetch(`${apiUrl}/api/register`, {
+            const response = await fetch("http://localhost:4000/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -30,22 +31,33 @@ function RegisterPage() {
     
             const data = await response.json();
             if (data.error) {
-                alert(data.error);
+                // Check for specific error message
+                if (data.error === 'This email address is already registered.') {
+                    setErrorMessage('Username already taken');
+                } else {
+                    setErrorMessage(data.error);
+                }
             } else {
                 console.log("User registered successfully!");
-                navigate('/login'); // <-- Redirect to login page
+                navigate('/login'); // Redirect to login page
             }
         } catch (error) {
             console.error("Error registering user:", error);
+            setErrorMessage('Failed to register user. Please try again.');
         }
     };
     
+    
+
     return (
         <div className="register-form-container">
             <form onSubmit={handleSubmit}>
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+
                 <div className="input-group">
                     <label htmlFor="username">Username:</label>
                     <input 
+                    
                         type="text" 
                         id="username" 
                         value={username} 
@@ -88,11 +100,14 @@ function RegisterPage() {
                     />
                 </div>
                 <button type="submit">Register</button>
-            </form>
+            
+
             <div className="login-link-container">
-                Already have an account? <Link to="/login">Login</Link>
-            </div>
+            Already have an account? <Link to="/login">Login</Link>
         </div>
+        </form>
+    </div>
+    
     );
 }
 
