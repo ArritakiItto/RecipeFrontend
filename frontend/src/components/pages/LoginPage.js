@@ -7,6 +7,7 @@ function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
     const { logIn, isLoggedIn } = useAuth();
 
     useEffect(() => {
@@ -17,10 +18,10 @@ function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Username:", username, "Password:", password);
-        
+        setErrorMessage(''); // Reset error message on new submission
+    
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+            const response = await fetch("http://localhost:4000/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -34,7 +35,8 @@ function LoginPage() {
         
             const data = await response.json();
             if (data.error) {
-                alert(data.error);
+                // Set a user-friendly error message
+                setErrorMessage('Username or password is incorrect');
             } else {
                 logIn();
                 localStorage.setItem('token', data.token);  // Store the token
@@ -43,12 +45,15 @@ function LoginPage() {
             
         } catch (error) {
             console.error("Error logging in:", error);
+            setErrorMessage('Incorrect username or password');
         }
     };
     
     return (
         <div className="login-form-container">
             <form onSubmit={handleSubmit}>
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+   
                 <div className="input-group">
                     <label htmlFor="username">Username:</label>
                     <input 
@@ -79,6 +84,9 @@ function LoginPage() {
         </div>
         
     );
+}
+
+export default LoginPage;
 }
 
 export default LoginPage;
